@@ -1,0 +1,2 @@
+INSERT INTO `user` (`id`, `username`, `password`, `name`, `phone`, `email`, `address`, `avatar`) VALUES (8, 'haha', '144', 'gugvu', '18877777776', '1021074@qq.com', '广西省', 'http://localhost:9090/file/download/ff750b2777d8f281d92b2ea103b4de14fabc54e7.jpg');
+INSERT INTO `user` (`id`, `username`, `password`, `name`, `phone`, `email`, `address`, `avatar`) VALUES (19, 'qwert', '123456777', 'qwert', '123456789', '11664512@qq.com', '广西省', 'http://localhost:9090/file/download/1735554529754_f74e55a7-7146-4914-9184-7e0c9ffac743.png');
