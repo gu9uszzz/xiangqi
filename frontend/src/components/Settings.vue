@@ -25,7 +25,7 @@ const saveSettings = () => {
 <template>
   <div class="settings-container">
     <nav class="navbar">
-      <div class="nav-brand">象棋游戏</div>
+      <button @click="goBack" class="back-btn nav-brand">返回</button>
       <div class="nav-links">
         <a @click="navigateTo('/home')">首页</a>
         <a @click="navigateTo('/profile')">个人信息</a>
@@ -34,8 +34,6 @@ const saveSettings = () => {
       </div>
     </nav>
     <main class="main-content">
-       <!-- 新增：返回按钮 -->
-       <button @click="goBack" class="back-btn top-left-back-btn">返回</button>
       <h1>设置</h1>
       <div class="settings-container-scroll">
         <div class="settings-section">
@@ -167,7 +165,6 @@ const saveSettings = () => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-   /* 新增：为绝对定位的子元素提供基准 */
   position: relative;
 }
 
@@ -179,13 +176,26 @@ const saveSettings = () => {
   align-items: center;
   width: 100%;
   backdrop-filter: blur(3px);
+  z-index: 10;
 }
 
 .nav-brand {
   color: white;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
   margin-right: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.nav-brand:hover {
+  background-color: rgba(85, 85, 85, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .nav-links {
@@ -248,16 +258,13 @@ const saveSettings = () => {
   border-radius: 8px;
   backdrop-filter: blur(3px);
   color: rgba(0, 0, 0, 0.8);
-   /* 新增：如果按钮放在这里，也需要相对定位 */
-  position: relative;
+  overflow-y: auto;
 }
 
 h1 {
-   /* 新增：为按钮留出空间 */
-  margin-top: 3rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   color: rgba(0, 0, 0, 0.8);
-  text-align: center; /* 居中标题 */
+  text-align: center;
 }
 
 h2 {
@@ -267,34 +274,11 @@ h2 {
 }
 
 .settings-container-scroll {
-  max-height: 70vh; /* 保持原有滚动高度 */
-  overflow-y: auto;
-  padding-right: 1rem; /* 保持内边距给滚动条 */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(175, 76, 147, 0.6) rgba(255, 255, 255, 0.1);
-}
-
-.settings-container-scroll::-webkit-scrollbar {
-  width: 8px;
-}
-
-.settings-container-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-.settings-container-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(175, 76, 147, 0.6);
-  border-radius: 4px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.settings-container-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(175, 76, 147, 0.8);
+  padding-right: 1rem;
 }
 
 .settings-section {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.3);
   padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 2rem;
@@ -306,7 +290,7 @@ h2 {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .setting-item:last-child {
@@ -343,7 +327,7 @@ h2 {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(204, 204, 204, 0.5);
+  background-color: rgba(204, 204, 204, 0.3);
   transition: .4s;
   border-radius: 24px;
 }
@@ -372,7 +356,7 @@ input:checked + .slider:before {
 select {
   padding: 0.5rem;
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   background-color: rgba(255, 255, 255, 0.3);
   color: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(3px);
@@ -439,5 +423,32 @@ select {
   top: 1.5rem; /* 根据需要调整 */
   left: 1.5rem; /* 根据需要调整 */
   z-index: 10; /* 确保在其他元素之上 */
+}
+
+/* 添加滚动条样式 */
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 192, 203, 0.7);  /* 粉色背景 */
+  border-radius: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 182, 193, 0.9);  /* 浅粉色，悬停时加深 */
+}
+
+/* Firefox 滚动条样式 */
+.main-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 192, 203, 0.7) rgba(255, 255, 255, 0.1);
 }
 </style>
