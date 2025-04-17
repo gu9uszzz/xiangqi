@@ -24,7 +24,7 @@ const goBack = () => {
 <template>
   <div class="home-container">
     <nav class="navbar">
-      <div class="nav-brand">象棋游戏</div>
+      <button @click="goBack" class="back-btn nav-brand">返回</button>
       <div class="nav-links">
         <a @click="navigateTo('/home')" class="active">首页</a>
         <a @click="navigateTo('/profile')">个人信息</a>
@@ -33,8 +33,6 @@ const goBack = () => {
       </div>
     </nav>
     <main class="main-content">
-      <!-- 新增：返回按钮 -->
-      <button @click="goBack" class="back-btn top-left-back-btn">返回</button>
       <h1>欢迎来到象棋游戏</h1>
       <div class="feature-cards">
         <div class="feature-card">
@@ -84,9 +82,21 @@ const goBack = () => {
 
 .nav-brand {
   color: white;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
   margin-right: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.nav-brand:hover {
+  background-color: rgba(85, 85, 85, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .nav-links {
