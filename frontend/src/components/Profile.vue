@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 // --- State for Profile Data ---
-const username = ref('玩家001');
+const username = ref('玩家0001');
 const phone = ref('138****8888'); // Keep masked for display
 const registrationDate = ref('2023-01-01');
 const gamesPlayed = ref(128); // Could be calculated from W+L+D
