@@ -10,7 +10,7 @@ const verificationCode = ref('')
 const isCodeSent = ref(false)
 const countdown = ref(0)
 
-// 后端 API 基础 URL 1.4修改
+// 后端 API 基础 URL
 const API_BASE_URL = 'http://localhost:9090' // 统一使用 9090 端口
 
 const validatePhoneNumber = (phone) => {
@@ -43,17 +43,18 @@ const startCountdown = () => {
   }, 1000)
 }
 
+// 注意：发送验证码的逻辑也可能需要适配后端
+// 假设 /verify-phone 接口也返回 code="200" 表示成功
 const sendVerificationCode = async () => {
   if (!validatePhoneNumber(phoneNumber.value)) {
     alert('请输入正确的手机号')
     return
   }
 
-  // 禁用按钮 1.4修改，防止重复点击
   isCodeSent.value = true;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/verify-phone`, { // 使用后端地址
+    const response = await fetch(`${API_BASE_URL}/verify-phone`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,25 +65,26 @@ const sendVerificationCode = async () => {
     })
 
     const data = await response.json()
-    if (response.ok && data.success) {
+    // 修改这里的判断以匹配后端可能的响应
+    if (response.ok && data.code === '200') { // <--- 修改判断条件
       startCountdown()
       console.log('验证码已发送（请检查后端控制台或实际短信）')
       // alert('验证码已发送，请注意查收。');
     } else {
-      alert(data.message || `发送验证码失败 (HTTP ${response.status})`)
-      isCodeSent.value = false; // 发送失败，允许重试
+      alert(data.msg || `发送验证码失败 (HTTP ${response.status})`) // 使用 msg 字段
+      isCodeSent.value = false;
     }
   } catch (error) {
     console.error('发送验证码请求失败:', error)
     alert('发送验证码请求失败，请检查网络或联系管理员')
-    isCodeSent.value = false; // 请求异常，允许重试
+    isCodeSent.value = false;
   }
 }
 
 const handleRegister = async () => {
-  // 1. 前端验证
-  if (!phoneNumber.value || !password.value || !confirmPassword.value || !verificationCode.value) {
-    alert('请填写所有必填项')
+  // 1. 前端验证 (保持不变)
+  if (!phoneNumber.value || !password.value || !confirmPassword.value /*|| !verificationCode.value*/) { // 暂时注释掉验证码非空检查，如果后端没校验
+    alert('请填写手机号和密码')
     return
   }
 
@@ -101,16 +103,9 @@ const handleRegister = async () => {
     return
   }
 
-  // 可以在这里添加验证码格式检查
-  if (!/^\d{6}$/.test(verificationCode.value)) {
-    alert('请输入6位数字验证码');
-    return;
-  }
-
-
-  // 2. 调用后端注册接口 (假设后端 /register 接口同时处理验证码校验)
+  // 2. 调用后端注册接口
   try {
-    const response = await fetch(`${API_BASE_URL}/register`, { // 调用统一的注册接口
+    const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -118,22 +113,30 @@ const handleRegister = async () => {
       body: JSON.stringify({
         phone: phoneNumber.value,
         password: password.value,
-        code: verificationCode.value // 将验证码一起发送
+        // code: verificationCode.value // 如果后端注册接口不校验验证码，可以暂时不传或注释掉
       })
     })
 
+    // 等待响应体完全接收并解析为JSON
     const data = await response.json()
 
-    if (response.ok && data.success) {
+    // --- 主要修改在这里 ---
+    // 判断 HTTP 状态码是 2xx 并且 后端返回的 code 是 "200"
+    if (response.ok && data.code === '200') {
       alert('注册成功！即将跳转到登录页面。')
       router.push('/login') // 注册成功后跳转到登录页
     } else {
-      // 显示后端返回的错误信息，更具体
-      alert(data.message || `注册失败 (HTTP ${response.status})`)
+      // 显示后端返回的错误信息，优先使用 data.msg
+      alert(data.msg || `注册失败 (HTTP ${response.status})`)
     }
   } catch (error) {
     console.error('注册请求失败:', error)
-    alert('注册请求失败，请检查网络或联系管理员')
+    // 检查是否是网络错误或其他导致 response 无法解析的问题
+    if (error instanceof SyntaxError) {
+       alert('无法解析服务器响应，请检查后端接口是否正确返回JSON');
+    } else {
+       alert('注册请求失败，请检查网络或联系管理员');
+    }
   }
 }
 
@@ -162,22 +165,24 @@ onUnmounted(() => {
           maxlength="11"
         >
         <!-- 发送验证码按钮现在在手机号输入框内 -->
-        <button
+        <!-- 注意：发送验证码功能是否可用取决于你的后端 /verify-phone 接口 -->
+        <!-- <button
           class="send-code-btn"
           @click="sendVerificationCode"
           :disabled="isCodeSent && countdown > 0"
         >
           {{ isCodeSent && countdown > 0 ? `${countdown}秒后重试` : '获取验证码' }}
-        </button>
+        </button> -->
       </div>
-      <div class="input-group">
+      <!-- 如果暂时不用验证码，可以注释掉这个输入框 -->
+      <!-- <div class="input-group">
         <input
           type="text"
           v-model="verificationCode"
           placeholder="请输入6位验证码"
           maxlength="6"
         >
-      </div>
+      </div> -->
       <div class="input-group">
         <input
           type="password"
@@ -214,7 +219,7 @@ onUnmounted(() => {
   background-position: center;
   background-repeat: no-repeat;
   margin: 0;
-  padding: 0; 
+  padding: 0;
   overflow: hidden;
 }
 
@@ -279,10 +284,10 @@ input::placeholder {
   cursor: not-allowed;
 }
 
-/* 为手机号输入框添加右边距，防止文字与按钮重叠 */
-.input-group input[type="tel"] {
-  padding-right: 110px; /* 调整这个值适应按钮宽度 */
-}
+/* 如果不用验证码按钮，可以注释掉这个 */
+/* .input-group input[type="tel"] {
+  padding-right: 110px;
+} */
 
 
 .button-group {
