@@ -36,11 +36,11 @@ const goBack = () => {
 
 <template>
   <div class="game-lobby">
+    <nav class="navbar">
+      <button @click="goBack" class="back-btn nav-brand">返回</button>
+    </nav>
     <div class="content">
-      <!-- 新增：返回按钮 -->
-      <button @click="goBack" class="back-btn lobby-back-btn">返回</button>
       <h1>游戏大厅</h1>
-
       <div class="lobby-container">
         <h2>在线对战大厅</h2>
         <div class="mode-selection">
@@ -64,8 +64,7 @@ const goBack = () => {
   width: 100vw;
   height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   background-image: url('../pictures/1.webp');
   background-size: 100% 100%;
   background-position: center;
@@ -75,14 +74,43 @@ const goBack = () => {
   overflow: hidden;
 }
 
-/* 新增：相对定位和 Flex 布局，方便按钮定位和内容居中 */
+/* 添加导航栏样式 */
+.navbar {
+  background-color: rgba(51, 51, 51, 0.3);
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  backdrop-filter: blur(3px);
+}
+
+.nav-brand {
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.nav-brand:hover {
+  background-color: rgba(85, 85, 85, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 修改内容区域样式 */
 .content {
-  position: relative;
-  width: 100%; /* 确保 content 占据宽度以便定位 */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center; /* 水平居中 lobby-container */
-  padding-top: 5rem; /* 为顶部的返回按钮留出空间 */
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 }
 
 .lobby-container {
@@ -97,15 +125,10 @@ const goBack = () => {
 }
 
 h1 {
-  /* 调整：移到 lobby-container 外面，并调整 margin */
   text-align: center;
-  margin-bottom: 2rem; /* 标题和容器之间的距离 */
+  margin-bottom: 2rem;
   color: rgba(0, 0, 0, 0.7);
-  position: absolute; /* 绝对定位标题，使其不影响按钮 */
-  top: 60px; /* 调整标题位置，使其在按钮下方 */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%; /* 确保标题居中 */
+  font-size: 2rem;
 }
 
 h2 {
@@ -167,14 +190,5 @@ h2 {
   background-color: rgba(120, 120, 120, 0.8);
   transform: translateY(-1px);
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-
-/* 新增：大厅返回按钮的特定定位（顶部居中） */
-.lobby-back-btn {
-  position: absolute;
-  top: 1.5rem; /* 调整垂直位置 */
-  left: 50%; /* 水平居中 */
-  transform: translateX(-50%); /* 精确居中 */
-  z-index: 10;
 }
 </style>
