@@ -95,7 +95,7 @@ const cancelEdit = () => {
 <template>
   <div class="profile-container">
     <nav class="navbar">
-      <div class="nav-brand">象棋游戏</div>
+      <button @click="goBack" class="back-btn nav-brand">返回</button>
       <div class="nav-links">
         <a @click="navigateTo('/home')">首页</a>
         <a @click="navigateTo('/profile')" class="active">个人信息</a>
@@ -105,8 +105,6 @@ const cancelEdit = () => {
     </nav>
 
     <main class="main-content">
-       <!-- 新增：返回按钮 -->
-       <button @click="goBack" class="back-btn top-left-back-btn">返回</button>
       <h1>个人信息</h1>
       <div class="profile-info">
         <!-- Avatar Section -->
@@ -194,38 +192,48 @@ const cancelEdit = () => {
   width: 100vw;
   height: 100vh;
   background-image: url('../pictures/3.webp');
-  background-size: cover; /* Use cover for better scaling */
+  background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  /* 新增：为绝对定位的子元素提供基准 */
   position: relative;
 }
 
 .navbar {
-  background-color: rgba(51, 51, 51, 0.4); /* Slightly more opaque */
-  padding: 1rem 1.5rem; /* More padding */
+  background-color: rgba(51, 51, 51, 0.3);
+  padding: 1rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   width: 100%;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  backdrop-filter: blur(3px);
+  z-index: 10;
 }
 
 .nav-brand {
   color: white;
-  font-size: 1.6rem; /* Slightly larger */
+  font-size: 1rem;
   font-weight: bold;
   margin-right: auto;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.3); /* Add subtle shadow */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.nav-brand:hover {
+  background-color: rgba(85, 85, 85, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .nav-links {
   display: flex;
-  gap: 1.2rem; /* More gap */
+  gap: 1rem;
   margin-right: 2rem;
 }
 
@@ -233,121 +241,112 @@ const cancelEdit = () => {
   color: white;
   text-decoration: none;
   cursor: pointer;
-  padding: 0.6rem 1.2rem; /* Adjust padding */
-  border-radius: 5px; /* Slightly more rounded */
-  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s;
   position: relative;
-  font-size: 1.05rem; /* Slightly larger font */
 }
 
 .nav-links a:hover {
-  background-color: rgba(85, 85, 85, 0.75);
+  background-color: rgba(85, 85, 85, 0.7);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .nav-links a::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: 0;
   left: 50%;
   width: 0;
   height: 2px;
   background-color: white;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
   transform: translateX(-50%);
 }
 
 .nav-links a:hover::after {
-  width: 70%; /* Adjust width */
+  width: 80%;
 }
 
 .nav-links a.active {
-  background-color: rgba(175, 76, 147, 0.7); /* More intense active color */
+  background-color: rgba(175, 76, 147, 0.6);
   color: white;
   font-weight: bold;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .nav-links a.active::after {
-  width: 70%; /* Match hover */
+  width: 80%;
   background-color: white;
 }
 
 /* --- Main Content & Profile Specific Styles --- */
 .main-content {
   flex: 1;
-  padding: 2rem 2.5rem; /* More padding */
-  max-width: 1000px; /* Adjusted max-width */
-  width: 85%; /* Adjust width */
-  margin: 2.5rem auto; /* More margin top/bottom */
-  background-color: rgba(255, 255, 255, 0.35); /* More opaque */
-  border-radius: 15px; /* More rounded */
-  backdrop-filter: blur(6px); /* Increased blur */
-  color: rgba(0, 0, 0, 0.9); /* Darker text */
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15); /* Enhanced shadow */
-  overflow-y: auto; /* Ensure content scrolls if too long */
-  /* 新增：如果按钮放在这里，也需要相对定位 */
-  position: relative;
+  padding: 2rem;
+  max-width: 1200px;
+  width: 90%;
+  margin: 2rem auto;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
+  color: rgba(0, 0, 0, 0.8);
+  overflow-y: auto;
+}
+
+/* 添加滚动条样式 */
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 192, 203, 0.7);  /* 粉色背景 */
+  border-radius: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 182, 193, 0.9);  /* 浅粉色，悬停时加深 */
+}
+
+/* Firefox 滚动条样式 */
+.main-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 192, 203, 0.7) rgba(255, 255, 255, 0.1);
 }
 
 h1 {
-  /* 新增：为按钮留出空间 */
-  margin-top: 3rem;
-  margin-bottom: 2rem; /* More spacing */
-  color: rgba(0, 0, 0, 0.9);
+  margin-bottom: 2rem;
+  color: rgba(0, 0, 0, 0.8);
   text-align: center;
-  font-weight: 600;
-  font-size: 2.2rem; /* Larger title */
 }
-
-h2 {
-    margin-top: 0;
-    margin-bottom: 1.2rem;
-    font-size: 1.6rem;
-    color: #333;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    padding-bottom: 0.5rem;
-}
-
-h3 {
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
-    font-size: 1.3rem;
-    color: #555;
-}
-
-hr {
-    border: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.15);
-    margin: 1.5rem 0;
-}
-
 
 .profile-info {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem; /* Increased gap */
-  margin-top: 1rem; /* Reduced top margin as h1 has more bottom margin */
-  align-items: flex-start;
+  gap: 2rem;
+  padding: 0rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
 }
 
 .avatar-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    flex-basis: 150px; /* Give avatar section a base width */
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .avatar {
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid rgba(255, 255, 255, 0.6); /* Thicker border */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  border: 4px solid rgba(255, 255, 255, 0.3);
 }
 
 .avatar img {
@@ -358,121 +357,101 @@ hr {
 
 .info {
   flex: 1;
-  min-width: 300px; /* Ensure info section doesn't get too small */
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
 }
 
-.info p, .form-group {
-  margin-bottom: 0.8rem; /* Fine-tune spacing */
-  font-size: 1.05rem; /* Slightly larger base font */
-  line-height: 1.6;
+.info h2 {
+  margin-bottom: 1rem;
+  color: rgba(0, 0, 0, 0.8);
 }
 
-.info strong, .form-group label {
-    display: inline-block; /* Ensures consistent layout */
-    min-width: 90px; /* Adjust label width */
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.75);
-    margin-right: 0.5rem; /* Space between label and value/input */
-    vertical-align: top; /* Align labels top for multiline textareas */
-}
-.info strong {
-    color: rgba(0, 0, 0, 0.65); /* Slightly lighter label in display mode */
+.info p {
+  margin: 0.5rem 0;
+  color: rgba(0, 0, 0, 0.7);
 }
 
-
-/* Edit Mode Styles */
-.form-group {
-    display: flex;
-    align-items: center; /* Align label and input vertically */
-    gap: 0.5rem;
-    flex-wrap: wrap; /* Allow wrapping if needed */
-}
-.form-group.form-group-textarea {
-    align-items: flex-start; /* Align label top for textarea */
+.info hr {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.form-group label {
-    flex-shrink: 0;
-}
-
-.form-group input[type="text"],
-.form-group input[type="tel"],
-.form-group textarea {
-    flex-grow: 1;
-    padding: 0.7rem 1rem; /* More padding in inputs */
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.8); /* More opaque input background */
-    font-size: 1rem;
-    color: #222; /* Darker input text */
-    transition: border-color 0.3s, box-shadow 0.3s;
-    min-width: 200px; /* Prevent inputs from becoming too small */
-}
-.form-group textarea {
-    resize: vertical; /* Allow vertical resize */
-    min-height: 80px; /* Minimum height for textarea */
-}
-
-.form-group input[type="text"]:focus,
-.form-group input[type="tel"]:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: rgba(175, 76, 147, 0.9);
-    box-shadow: 0 0 0 3px rgba(175, 76, 147, 0.25);
-}
-
-/* Action Buttons */
 .action-buttons {
-  margin-top: 2.5rem; /* More space above buttons */
   display: flex;
-  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
   gap: 1rem;
+  margin-top: 2rem;
 }
 
 .btn {
-  padding: 0.8rem 1.8rem; /* Larger buttons */
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-  text-align: center;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-.btn:active {
-    transform: translateY(0px);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .btn-edit {
-  background-color: #4a90e2;
+  background-color: rgba(175, 76, 147, 0.6);
   color: white;
 }
-.btn-edit:hover { background-color: #3a7bc8; }
 
-.btn-save {
-  background-color: #50e3c2;
-  color: #333;
+.btn-edit:hover {
+  background-color: rgba(175, 76, 147, 0.8);
 }
-.btn-save:hover { background-color: #38c9a8; }
-
-.btn-cancel {
-  background-color: #f5a623;
-  color: white;
-}
-.btn-cancel:hover { background-color: #d9901f; }
 
 .btn-secondary {
-  background-color: #777;
+  background-color: rgba(100, 100, 100, 0.6);
   color: white;
 }
-.btn-secondary:hover { background-color: #666; }
+
+.btn-secondary:hover {
+  background-color: rgba(100, 100, 100, 0.8);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.form-group-textarea textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.btn-save {
+  background-color: rgba(76, 175, 80, 0.6);
+  color: white;
+}
+
+.btn-save:hover {
+  background-color: rgba(76, 175, 80, 0.8);
+}
+
+.btn-cancel {
+  background-color: rgba(244, 67, 54, 0.6);
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: rgba(244, 67, 54, 0.8);
+}
 
 /* 新增：返回按钮样式 */
 .back-btn {
