@@ -16,7 +16,7 @@ const goBack = () => {
 <template>
   <div class="rankings-container">
     <nav class="navbar">
-      <div class="nav-brand">象棋游戏</div>
+      <button @click="goBack" class="back-btn nav-brand">返回</button>
       <div class="nav-links">
         <a @click="navigateTo('/home')">首页</a>
         <a @click="navigateTo('/profile')">个人信息</a>
@@ -25,8 +25,6 @@ const goBack = () => {
       </div>
     </nav>
     <main class="main-content">
-      <!-- 新增：返回按钮 -->
-      <button @click="goBack" class="back-btn top-left-back-btn">返回</button>
       <h1>排行榜</h1>
       <div class="ranking-tabs">
         <button class="tab-btn active">总榜</button>
@@ -148,8 +146,34 @@ const goBack = () => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-   /* 新增：为绝对定位的子元素提供基准 */
   position: relative;
+}
+
+/* 添加滚动条样式 */
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 192, 203, 0.7);  /* 粉色背景 */
+  border-radius: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 182, 193, 0.9);  /* 浅粉色，悬停时加深 */
+}
+
+/* Firefox 滚动条样式 */
+.main-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 192, 203, 0.7) rgba(255, 255, 255, 0.1);
 }
 
 .navbar {
@@ -160,13 +184,26 @@ const goBack = () => {
   align-items: center;
   width: 100%;
   backdrop-filter: blur(3px);
+  z-index: 10;
 }
 
 .nav-brand {
   color: white;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
   margin-right: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.nav-brand:hover {
+  background-color: rgba(85, 85, 85, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .nav-links {
@@ -229,30 +266,27 @@ const goBack = () => {
   border-radius: 8px;
   backdrop-filter: blur(3px);
   color: rgba(0, 0, 0, 0.8);
-  /* 新增：如果按钮放在这里，也需要相对定位 */
-  position: relative;
+  overflow-y: auto;
 }
 
 h1 {
-  /* 新增：为按钮留出空间 */
-  margin-top: 3rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   color: rgba(0, 0, 0, 0.8);
-  text-align: center; /* 居中标题 */
+  text-align: center;
 }
 
 .ranking-tabs {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
-  justify-content: center; /* 居中标签页 */
+  justify-content: center;
 }
 
 .tab-btn {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.3);
   color: rgba(0, 0, 0, 0.8);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -264,40 +298,17 @@ h1 {
 }
 
 .tab-btn:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .ranking-list-container {
-  max-height: 60vh;
-  overflow-y: auto;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(2px);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(175, 76, 147, 0.6) rgba(255, 255, 255, 0.1);
-}
-
-.ranking-list-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.ranking-list-container::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-.ranking-list-container::-webkit-scrollbar-thumb {
-  background-color: rgba(175, 76, 147, 0.6);
-  border-radius: 4px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.ranking-list-container::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(175, 76, 147, 0.8);
 }
 
 .ranking-list {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -320,7 +331,7 @@ h1 {
 }
 
 .ranking-item:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .top-1 {
@@ -344,12 +355,11 @@ h1 {
   font-weight: bold;
 }
 
-/* 新增：返回按钮样式 */
 .back-btn {
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 4px;
-  background-color: rgba(100, 100, 100, 0.6); /* 中性灰色 */
+  background-color: rgba(100, 100, 100, 0.6);
   color: white;
   font-size: 0.9rem;
   cursor: pointer;
@@ -363,11 +373,10 @@ h1 {
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
-/* 新增：返回按钮定位（左上角） */
 .top-left-back-btn {
   position: absolute;
-  top: 1.5rem; /* 根据需要调整 */
-  left: 1.5rem; /* 根据需要调整 */
-  z-index: 10; /* 确保在其他元素之上 */
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 10;
 }
 </style>
