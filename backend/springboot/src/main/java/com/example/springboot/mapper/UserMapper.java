@@ -8,8 +8,8 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    @Insert("insert into `user` (username, password, phone, avatar) " +
-            "values (#{username}, #{password}, #{phone}, #{avatar})")
+    @Insert("insert into `user` (username, password, email, avatar, date, lastlogin, address, sign) " +
+            "values (#{username}, #{password}, #{email}, #{avatar}, #{date}, #{lastlogin}, #{address}, #{sign})")
     void insert(User user);
 
 
@@ -26,11 +26,12 @@ public interface UserMapper {
     @Select("select * from `user` where username = #{username}")
     User selectByUsername(String username);
 
-    @Select("select * from `user` where phone = #{phone}")
-    User selectByPhone(String phone);
+    @Select("select * from `user` where email = #{email}")
+    User selectByEmail(String email);
 
-    @Update("update `user` set username = #{username}, " +
-            "phone = #{phone}, avatar = #{avatar} where username = #{username}")
+
+    @Update("update `user` set username = #{username}, email = #{email}, avatar = #{avatar}, " +
+            "date = #{date}, lastlogin = #{lastlogin}, address = #{address}, sign = #{sign} where username = #{username}")
     void update(User user);
 
     @Update("update `user` set password = #{password} where username = #{username}")

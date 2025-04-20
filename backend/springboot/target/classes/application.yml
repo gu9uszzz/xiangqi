@@ -17,4 +17,10 @@ spring:
     multipart:
       max-file-size: 25MB
       max-request-size: 25MB
+  mail:
+    username: 1021074244@qq.com
+    password: reytbxeqjgmmbeca
+    host: smtp.qq.com
+    port: 465
+    protocol: smtps
 ip: localhost

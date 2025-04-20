@@ -7,9 +7,11 @@ public class Rank {
 
     private Integer user_id;
 
-    private Integer nums;
+    private Integer nums;//场次
 
-    private Integer wins;
+    private Integer wins;//胜场
 
-    private Integer points;
+    private Integer loses;//负场
+
+    private Integer score;//积分
 }

@@ -11,11 +11,16 @@ public class User {
 
     private String password;//密码
 
-    private String phone;//手机号
-
-    private String date;//注册日期
+    private String email;//电子邮箱
 
     private String avatar;//头像
 
-    private String token;//密钥
+    private String date;//注册日期
+
+    private String lastlogin;//上次登录
+
+    private String address;//手机号
+
+    private String sign;//个性签名
+
 }

@@ -22,8 +22,8 @@ public class WebController {
 
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
-        //手机号或密码为空
-        if(StrUtil.isBlank(user.getPhone()) || StrUtil.isBlank(user.getPassword())) {
+        //邮箱或密码为空
+        if(StrUtil.isBlank(user.getEmail()) || StrUtil.isBlank(user.getPassword())) {
             return Result.error("输入不合法");
         }
         user = userService.login(user);
@@ -33,16 +33,11 @@ public class WebController {
     @AuthAccess
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
-        //用户名或密码为空
-        /*if(StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
+        //邮箱或密码为空
+        if(StrUtil.isBlank(user.getEmail()) || StrUtil.isBlank(user.getPassword())) {
             return Result.error("输入不合法");
         }
-        if (user.getUsername().length() < 5 || user.getUsername().length() > 12) {
-            return Result.error("输入不合法");
-        }*/
-        if (user.getPhone().length() != 11) {
-            return Result.error("输入不合法");
-        }
+
         // 密码长度为8-16
         if (user.getPassword().length() < 8 || user.getPassword().length() > 16) {
             return Result.error("输入不合法");
@@ -54,7 +49,7 @@ public class WebController {
     @AuthAccess
     @PutMapping("/password")
     public Result password(@RequestBody User user) {
-        if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPhone()) || StrUtil.isBlank(user.getPassword())) {
+        if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getEmail()) || StrUtil.isBlank(user.getPassword())) {
             return Result.error("数据输入不能为空");
         }
         userService.resetPassword(user);
