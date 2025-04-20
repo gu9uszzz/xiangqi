@@ -1,1 +1,4 @@
 /backend/springboot/target/
+/backend/springboot/src/main/resources/application.yml
+.idea
+/backend/springboot/.idea
