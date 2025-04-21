@@ -3,113 +3,50 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const phoneNumber = ref('')
+// --- 修改：将 phoneNumber 改为 username ---
+const username = ref('')
 const password = ref('')
-const verificationCode = ref('')
-const isCodeSent = ref(false)
-const countdown = ref(0)
-const loginType = ref('password') // 'password' 或 'code'
 
-// 后端 API 基础 URL 全局设置1.4修改
-const API_BASE_URL = 'http://localhost:9090'
+// --- 移除：验证码、发送状态、倒计时、登录类型相关的 ref ---
+// const verificationCode = ref('')
+// const isCodeSent = ref(false)
+// const countdown = ref(0)
+// const loginType = ref('password') // 不再需要，固定为用户名密码登录
+// let countdownTimer = null; // 不再需要
 
-// 启用手机号验证1.4修改
-const validatePhoneNumber = (phone) => {
-  return /^1[3-9]\d{9}$/.test(phone)
-}
+// 后端 API 基础 URL (保持不变)
+const API_BASE_URL = 'http://localhost:9090' // 确保这个地址正确
 
-let countdownTimer = null; // 用于存储定时器 ID
+// --- 移除：手机号验证函数 ---
+// const validatePhoneNumber = (phone) => { ... }
 
-const startCountdown = () => {
-  // 清除之前的定时器（如果有）
-  if (countdownTimer) {
-    clearInterval(countdownTimer);
-  }
-  countdown.value = 60
-  countdownTimer = setInterval(() => {
-    countdown.value--
-    if (countdown.value <= 0) {
-      clearInterval(countdownTimer)
-      countdownTimer = null; // 清除 ID
-      isCodeSent.value = false; // 允许重新发送
-    }
-  }, 1000)
-}
+// --- 移除：倒计时函数 ---
+// const startCountdown = () => { ... }
 
-const sendVerificationCode = async () => {
-  // 启用手机号验证
-  if (!validatePhoneNumber(phoneNumber.value)) {
-    alert('请输入正确的手机号')
-    return
-  }
+// --- 移除：发送验证码函数 ---
+// const sendVerificationCode = async () => { ... }
 
-  // 禁用按钮，防止重复点击
-  isCodeSent.value = true;
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/verify-phone`, { // 使用后端地址
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        phone: phoneNumber.value
-      })
-    })
-
-    const data = await response.json()
-    if (response.ok && data.success) { // 检查 HTTP 状态码和业务成功标志
-      startCountdown()
-      console.log('验证码已发送（请检查后端控制台或实际短信）')
-      // 可以给用户一个更友好的提示
-      // alert('验证码已发送，请注意查收。');
-    } else {
-      alert(data.message || `发送验证码失败 (HTTP ${response.status})`)
-      isCodeSent.value = false; // 发送失败，允许重试
-    }
-  } catch (error) {
-    console.error('发送验证码请求失败:', error)
-    alert('发送验证码请求失败，请检查网络或联系管理员')
-    isCodeSent.value = false; // 请求异常，允许重试
-  }
-}
-
+// --- 修改：登录处理函数 ---
 const handleLogin = async () => {
-  // 启用验证
-  if (!validatePhoneNumber(phoneNumber.value)) {
-    alert('请输入正确的手机号')
+  // --- 修改：校验用户名和密码是否为空 ---
+  if (!username.value) {
+    alert('请输入用户名')
+    return
+  }
+  if (!password.value) {
+    alert('请输入密码')
     return
   }
 
-  let url = ''
-  let payload = {}
-
-  if (loginType.value === 'password') {
-    if (!password.value) {
-      alert('请输入密码')
-      return
-    }
-    url = `${API_BASE_URL}/login` // 使用后端地址
-    payload = {
-      phone: phoneNumber.value,
-      password: password.value
-    }
-  } else { // loginType === 'code'
-    if (!verificationCode.value) {
-      alert('请输入验证码')
-      return
-    }
-     // 可以在这里添加验证码格式检查，例如必须是6位数字
-    if (!/^\d{6}$/.test(verificationCode.value)) {
-      alert('请输入6位数字验证码');
-      return;
-    }
-    url = `${API_BASE_URL}/login-by-code` // 使用后端地址
-    payload = {
-      phone: phoneNumber.value,
-      code: verificationCode.value
-    }
+  // --- 修改：固定使用用户名密码登录 ---
+  const url = `${API_BASE_URL}/user/login` // 对接后端 /user/login 接口
+  const payload = {
+    username: username.value, // 发送 username
+    password: password.value
   }
+
+  console.log('发送登录请求, URL:', url);
+  console.log('发送登录请求, Body:', JSON.stringify(payload));
 
   // 执行登录请求
   try {
@@ -117,58 +54,89 @@ const handleLogin = async () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        // 如果后续接口需要认证，可以在这里添加 Authorization Header
+        // 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       },
       body: JSON.stringify(payload)
     })
 
-    const data = await response.json()
+    console.log('收到登录响应:', response);
+    console.log('响应状态码 (status):', response.status);
+    console.log('响应是否成功 (ok):', response.ok); // true if status 200-299
 
-    if (response.ok && data.success) {
-      // --- 重要：处理登录成功后的 Token ---
-      // 假设后端成功时返回 { success: true, token: 'your_jwt_token', ... }
-      if (data.token) {
-         localStorage.setItem('authToken', data.token); // 将 token 存储在 localStorage
-         console.log('登录成功，Token 已存储');
+    let data = {};
+    try {
+        const responseClone = response.clone();
+        data = await response.json();
+        console.log('解析后的 JSON 数据 (data):', data);
+    } catch (jsonError) {
+        console.error('解析 JSON 失败:', jsonError);
+        try {
+             const text = await responseClone.text();
+             console.error('原始响应文本:', text);
+             alert(`登录失败：服务器响应格式错误 (HTTP ${response.status})。响应内容请查看控制台。`);
+        } catch (textError) {
+            console.error('读取响应文本也失败:', textError);
+             alert(`登录失败：无法读取服务器响应 (HTTP ${response.status})。`);
+        }
+        return;
+    }
+
+
+    // --- 修改：根据后端 Result 结构判断登录结果 ---
+    // 关键判断：HTTP 状态码 200-299 且 后端业务代码为 '200'
+    if (response.ok && data.code === '200') {
+      console.log('判断为登录成功');
+
+      // --- 重要：处理登录成功后的 Token 和用户信息 ---
+      // 假设后端成功时返回 { code: '200', msg: '...', data: { user: {...}, token: '...' } }
+      if (data.data && data.data.token) {
+         const token = data.data.token;
+         const user = data.data.user;
+         localStorage.setItem('authToken', token); // 将 token 存储在 localStorage
+         console.log('登录成功，Token 已存储:', token);
+
+         // 可选：同时存储用户信息 (注意保护敏感信息，后端不应返回密码)
+         if (user) {
+           localStorage.setItem('userInfo', JSON.stringify(user));
+           console.log('用户信息已存储:', user);
+         }
+
+         // --- 保持跳转到首页的逻辑 ---
+         router.push('/home'); // 登录成功后跳转到首页
+         console.log('已执行跳转到 /home');
+
       } else {
-         console.warn('登录成功，但后端未返回 Token');
-         // 根据你的应用逻辑，决定没有 token 是否能继续
+         console.error('登录成功，但响应数据中缺少 token 或 data 结构不符合预期:', data);
+         alert('登录成功，但获取用户信息失败，请联系管理员。');
+         // 根据你的应用逻辑，决定没有 token 是否能继续，这里选择提示错误
       }
-      // --- Token 处理结束 ---
+      // --- Token 和用户信息处理结束 ---
 
-      router.push('/home') // 跳转到首页
     } else {
-      alert(data.message || `登录失败 (HTTP ${response.status})`)
+      // 登录失败或后端返回业务错误代码
+      const errorMsg = data.msg || `未知错误`;
+      const errorCode = data.code || '无业务代码';
+      console.error(`登录失败详情 - HTTP Status: ${response.status}, Business Code: ${errorCode}, Message: ${errorMsg}`);
+      alert(`登录失败: ${errorMsg} (Code: ${errorCode})`); // 显示后端返回的错误信息
     }
   } catch (error) {
-    console.error('登录请求失败:', error)
-    alert('登录请求失败，请检查网络或联系管理员')
+    console.error('登录请求 fetch 失败:', error)
+    alert('登录请求失败，请检查网络连接或联系管理员。')
   }
 }
 
+// 跳转到注册页函数 (保持不变)
 const goToRegister = () => {
   router.push('/register')
 }
 
-const switchLoginType = () => {
-  loginType.value = loginType.value === 'password' ? 'code' : 'password'
-  verificationCode.value = ''
-  password.value = ''
-  // 切换时重置验证码发送状态和倒计时
-  isCodeSent.value = false
-  countdown.value = 0
-  if (countdownTimer) {
-    clearInterval(countdownTimer)
-    countdownTimer = null;
-  }
-}
+// --- 移除：切换登录类型函数 ---
+// const switchLoginType = () => { ... }
 
-// 组件卸载时清除定时器
-import { onUnmounted } from 'vue';
-onUnmounted(() => {
-  if (countdownTimer) {
-    clearInterval(countdownTimer);
-  }
-});
+// --- 移除：组件卸载时清除定时器 ---
+// import { onUnmounted } from 'vue';
+// onUnmounted(() => { ... });
 
 </script>
 
@@ -177,43 +145,37 @@ onUnmounted(() => {
     <div class="login-container">
       <h2>登录</h2>
       <div class="input-group">
+        <!-- --- 修改：改为用户名输入框 --- -->
         <input
-          type="tel"
-          v-model="phoneNumber"
-          placeholder="请输入手机号"
-          maxlength="11"
+          type="text"
+          v-model="username"
+          placeholder="请输入用户名"
         >
       </div>
 
-      <div v-if="loginType === 'password'" class="input-group">
+      <!-- --- 修改：保留密码输入框，移除 v-if 添加回车登录--- -->
+      <div class="input-group">
         <input
           type="password"
           v-model="password"
           placeholder="请输入密码"
+          @keyup.enter="handleLogin"  
         >
       </div>
 
+      <!-- --- 移除：验证码输入和发送按钮 --- -->
+      <!--
       <div v-else class="input-group">
-        <input
-          type="text"
-          v-model="verificationCode"
-          placeholder="请输入6位验证码"
-          maxlength="6"
-        >
-        <button
-          class="send-code-btn"
-          @click="sendVerificationCode"
-          :disabled="isCodeSent && countdown > 0"
-        >
-          {{ isCodeSent && countdown > 0 ? `${countdown}秒后重试` : '获取验证码' }}
-        </button>
+        ... 验证码输入 ...
       </div>
+      -->
 
+      <!-- --- 移除：登录类型切换链接 --- -->
+      <!--
       <div class="login-type-switch">
-        <a @click="switchLoginType">
-          {{ loginType === 'password' ? '使用验证码登录' : '使用密码登录' }}
-        </a>
+        <a @click="switchLoginType"> ... </a>
       </div>
+       -->
 
       <div class="button-group">
         <button @click="handleLogin">登录</button>
@@ -280,53 +242,22 @@ input::placeholder {
   color: rgba(0, 0, 0, 0.5);
 }
 
-.send-code-btn {
-  position: absolute;
-  right: 1px; /* 调整位置，避免与输入框边框重叠 */
-  top: 1px;   /* 调整位置 */
-  bottom: 1px; /* 调整位置 */
-  padding: 0 10px; /* 调整内边距 */
-  background-color: rgba(175, 76, 147, 0.6);
-  color: white;
-  border: none;
-  border-radius: 0 4px 4px 0; /* 调整圆角以贴合输入框 */
-  cursor: pointer;
-  font-size: 14px;
-  backdrop-filter: blur(3px);
-  transition: all 0.3s ease;
-  /* 移除 transform ，因为 top/bottom/right 已定位 */
-}
+/* --- 移除：发送验证码按钮的样式 --- */
+/* .send-code-btn { ... } */
+/* .send-code-btn:disabled { ... } */
+/* .input-group input[type="text"] { padding-right: 110px; } */ /* 不再需要给文本框留空间 */
 
-.send-code-btn:disabled {
-  background-color: rgba(204, 204, 204, 0.5);
-  cursor: not-allowed;
-}
 
-/* 为验证码输入框添加一些右边距，防止文字与按钮重叠 */
-.input-group input[type="text"] {
-  padding-right: 110px; /* 调整这个值适应按钮宽度 */
-}
-
-.login-type-switch {
-  text-align: right;
-  margin-bottom: 15px;
-}
-
-.login-type-switch a {
-  color: rgba(175, 76, 147, 0.8);
-  text-decoration: none;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.login-type-switch a:hover {
-  text-decoration: underline;
-}
+/* --- 移除：登录类型切换的样式 --- */
+/* .login-type-switch { ... } */
+/* .login-type-switch a { ... } */
+/* .login-type-switch a:hover { ... } */
 
 .button-group {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  margin-top: 20px; /* 可以稍微增加按钮组的上边距 */
 }
 
 button {

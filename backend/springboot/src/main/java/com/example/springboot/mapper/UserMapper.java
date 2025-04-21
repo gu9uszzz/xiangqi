@@ -10,7 +10,7 @@ public interface UserMapper {
 
     @Insert("insert into `user` (username, password, email, avatar, date, lastlogin, address, sign) " +
             "values (#{username}, #{password}, #{email}, #{avatar}, #{date}, #{lastlogin}, #{address}, #{sign})")
-    void insert(User user);
+    int insert(User user);
 
 
     @Delete("delete from `user` where id = #{id}")

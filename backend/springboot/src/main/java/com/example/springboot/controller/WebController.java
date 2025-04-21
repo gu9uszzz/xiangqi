@@ -1,7 +1,7 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.example.springboot.common.AuthAccess;
+//import com.example.springboot.common.AuthAccess;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.UserService;
@@ -24,61 +24,61 @@ public class WebController {
 
     private SimpleMailMessage mail = new SimpleMailMessage();
 
-    @AuthAccess
-    @GetMapping("/test")
-    public Result hello() {
-        return Result.success("success");
-    }
+//    @AuthAccess
+//    @GetMapping("/test")
+//    public Result hello() {
+//        return Result.success("success");
+//    }
 
-    @AuthAccess
-    @GetMapping("/sendcode")
-    public Result sendCode(@RequestBody User user, HttpSession session) {
-        String code = CreateCode.generateVerificationCode();
-        session.setAttribute("code_" + user.getEmail(), code);
-        session.setMaxInactiveInterval(5 * 60);
-        mail.setSubject("CHESS验证码");
-        mail.setText("你的验证码是" + code);
-        mail.setFrom("3351376712@qq.com");
-        mail.setTo(user.getEmail());
-        sender.send(mail);
-        return Result.success(code);
-    }
+//    @AuthAccess
+//    @PostMapping("/sendcode")
+//    public Result sendCode(@RequestBody User user, HttpSession session) {
+//        String code = CreateCode.generateVerificationCode();
+//        session.setAttribute("code_" + user.getEmail(), code);
+//        session.setMaxInactiveInterval(5 * 60);
+//        mail.setSubject("CHESS验证码");
+//        mail.setText("你的验证码是" + code);
+//        mail.setFrom("3351376712@qq.com");
+//        mail.setTo(user.getEmail());
+//        sender.send(mail);
+//        return Result.success(code);
+//    }
 
 
-    @PostMapping("/login")
-    public Result login(@RequestBody User user) {
-        //邮箱或密码为空
-        if(StrUtil.isBlank(user.getEmail()) || StrUtil.isBlank(user.getPassword()) || StrUtil.isBlank(user.getCode())) {
-            return Result.error("输入不合法");
-        }
-        user = userService.login(user);
-        return Result.success(user);
-    }
+//    @PostMapping("/login")
+//    public Result login(@RequestBody User user) {
+//        //邮箱或密码为空
+//        if(StrUtil.isBlank(user.getEmail()) || StrUtil.isBlank(user.getPassword()) || StrUtil.isBlank(user.getCode())) {
+//            return Result.error("输入不合法");
+//        }
+//        user = userService.login(user);
+//        return Result.success(user);
+//    }
 
-    @AuthAccess
-    @PostMapping("/register")
-    public Result register(@RequestBody User user) {
-        //为空
-        if(StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getEmail()) || StrUtil.isBlank(user.getPassword()) || StrUtil.isBlank(user.getCode())) {
-            return Result.error("输入不合法");
-        }
+//    @AuthAccess
+//    @PostMapping("/register")
+//    public Result register(@RequestBody User user) {
+//        //为空
+//        if(StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getEmail()) || StrUtil.isBlank(user.getPassword()) || StrUtil.isBlank(user.getCode())) {
+//            return Result.error("输入不合法");
+//        }
+//
+////        // 密码长度为8-16
+////        if (user.getPassword().length() < 8 || user.getPassword().length() > 16) {
+////            return Result.error("输入不合法");
+////        }
+//        user = userService.register(user);
+//        return Result.success(user);
+//    }
 
-        // 密码长度为8-16
-        if (user.getPassword().length() < 8 || user.getPassword().length() > 16) {
-            return Result.error("输入不合法");
-        }
-        user = userService.register(user);
-        return Result.success(user);
-    }
-
-    @AuthAccess
-    @PutMapping("/password")
-    public Result password(@RequestBody User user) {
-        if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getEmail()) ||
-                StrUtil.isBlank(user.getPassword()) || StrUtil.isBlank(user.getCode())) {
-            return Result.error("数据输入不能为空");
-        }
-        userService.resetPassword(user);
-        return Result.success();
-    }
+//    @AuthAccess
+//    @PutMapping("/password")
+//    public Result password(@RequestBody User user) {
+//        if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getEmail()) ||
+//                StrUtil.isBlank(user.getPassword()) || StrUtil.isBlank(user.getCode())) {
+//            return Result.error("数据输入不能为空");
+//        }
+//        userService.resetPassword(user);
+//        return Result.success();
+//    }
 }

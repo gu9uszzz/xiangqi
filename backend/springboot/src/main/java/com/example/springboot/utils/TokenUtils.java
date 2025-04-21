@@ -1,4 +1,4 @@
-package utils; // Adjust package name
+package com.example.springboot.utils; // Adjust package name
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

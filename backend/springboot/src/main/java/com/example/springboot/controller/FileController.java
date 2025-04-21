@@ -1,7 +1,7 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.io.FileUtil;
-import com.example.springboot.common.AuthAccess;
+//import com.example.springboot.common.AuthAccess;
 import com.example.springboot.common.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -45,18 +45,18 @@ public class FileController {
         return Result.success(url);  //返回文件的下载链接
     }
 
-    @AuthAccess
-    @GetMapping("/download/{fileName}")
-    public void download(@PathVariable String fileName, HttpServletResponse response) throws IOException {
-        //response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileFullName, "UTF-8"));  // 附件下载
-        String filePath = ROOT_PATH  + File.separator + fileName;
-        if (!FileUtil.exist(filePath)) {
-            return;
-        }
-        byte[] bytes = FileUtil.readBytes(filePath);
-        ServletOutputStream outputStream = response.getOutputStream();
-        outputStream.write(bytes);
-        outputStream.flush();
-        outputStream.close();
-    }
+//    @AuthAccess
+//    @GetMapping("/download/{fileName}")
+//    public void download(@PathVariable String fileName, HttpServletResponse response) throws IOException {
+//        //response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileFullName, "UTF-8"));  // 附件下载
+//        String filePath = ROOT_PATH  + File.separator + fileName;
+//        if (!FileUtil.exist(filePath)) {
+//            return;
+//        }
+//        byte[] bytes = FileUtil.readBytes(filePath);
+//        ServletOutputStream outputStream = response.getOutputStream();
+//        outputStream.write(bytes);
+//        outputStream.flush();
+//        outputStream.close();
+//    }
 }
